@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import './链表'
+// import './链表'
+import './deepClone'
 
 const App = () => {
   return <div>app</div>
