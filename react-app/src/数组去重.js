@@ -1,0 +1,65 @@
+// 数组去重
+
+// ===================set====================
+
+// ------------set add----------------
+// const arr = new Set()
+// arr.add(1)
+// arr.add(2)
+// arr.add(1)
+// arr.add(2)
+// console.log(arr)
+
+// ------------set init----------------
+// const arr = new Set([1,2,1,2])
+// console.log(arr)
+
+// --------------去除数组重复成员----------
+// let arr = [1,2,1,2]
+// arr = [...new Set(arr)]
+// console.log(arr)
+
+// ----------------set 成员函数-----------
+// const set = new Set([1])
+// set.size // 1
+// set.has(1) // boolean
+// set.clear() // 清空
+
+// Array.from 可以将 set转换为数组
+
+// ---------遍历----
+// Set.prototype.keys()：返回键名的遍历器
+// Set.prototype.values()：返回键值的遍历器
+// Set.prototype.entries()：返回键值对的遍历器
+// Set.prototype.forEach()：使用回调函数遍历每个成员
+
+
+// =============filter============
+
+// let arr = [1,3,1,3]
+// arr = arr.filter((item, i) => {
+  //   return arr.indexOf(item) === i
+  // })
+  // console.log(arr)
+
+
+// ============reduce===========
+// let arr = [1,3,2,1,3]
+// arr = arr.reduce((pre, cur) => {
+//   if(!pre.includes(cur)){
+//     pre.push(cur)
+//   }
+//   return pre
+// }, [])
+// console.log(arr)
+
+
+// =========filter+object=======
+
+let obj = {}
+let arr = [1,3,2,1,3]
+
+arr.filter((item, i) => {
+  return 
+})
+console.log(obj)

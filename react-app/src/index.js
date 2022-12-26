@@ -2,7 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 // import './链表'
-import './deepClone'
+// import './deepClone'
+import './数组去重'
 
 const App = () => {
   return <div>app</div>
