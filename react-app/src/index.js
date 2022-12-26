@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom'
 // import './链表'
 // import './deepClone'
 // import './数组去重'
-import './发布订阅'
+// import './发布订阅'
+// import './防抖'
+// import './节流'
 
 const App = () => {
   return <div>app</div>
