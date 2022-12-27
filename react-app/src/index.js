@@ -7,7 +7,8 @@ import ReactDOM from 'react-dom'
 // import './发布订阅'
 // import './防抖'
 // import './节流'
-import './快速排序'
+// import './快速排序'
+import './类型判断'
 
 const App = () => {
   return <div>app</div>
