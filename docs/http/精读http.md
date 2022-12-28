@@ -290,5 +290,14 @@ set-Cookie: b=xxx
 
 
 ## 什么是跨域
+
+浏览器遵循同源策略 `schema` `host` `port` 都相同为同源，非同源站点有限制
+
+1. 不能读取和修改对方的dom
+2. 不能访问对方的cookie indexDB localStorage
+3. 限制XMLHttpRequest请求
+
+当浏览器发送Ajax请求时，只要当前url跟目标url不同源，就会产生跨域
+
 ## 浏览器如何拦截响应
 ## 如何解决跨域
