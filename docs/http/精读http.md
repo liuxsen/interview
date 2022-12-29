@@ -300,4 +300,132 @@ set-Cookie: b=xxx
 当浏览器发送Ajax请求时，只要当前url跟目标url不同源，就会产生跨域
 
 ## 浏览器如何拦截响应
+
+跨域请求的响应会被浏览器拦截，响应其实已经成功到达客户端了
+
+浏览器渲染进程将`请求`发送给浏览器主进程，主进程接收到后，发送`网络请求`
+服务端处理完请求后，返回响应，主进程检查到跨域，并没有cors，将响应体全部丢掉，并不会发送给渲染进程，就达到了拦截数据的目的
+
 ## 如何解决跨域
+
+### cors
+
+cors 是跨域资源共享，服务器需要附加特定的响应头
+
+**简单请求**
+
+请求方法
+
+- GET
+- POST
+- HEAD
+
+请求头
+
+- ACCEPT
+- ACCEPT-Language
+- Content-Language
+- Content-Type
+  - application/x-www-form-urlencoded
+  - multipart/form-data
+  - text/plain
+
+1. 发送请求，在请求头中添加 Origin 字段，标识来自哪个源
+2. 服务器响应时，添加 `Access-Control-Allow-Origin` 字段，如果Origin不在这个范围，就会将响应拦截
+
+跨域请求，默认不会带cookie，如果需要跨域请求携带cookie、
+
+1. 前端请求携带 `withCredentials` 属性
+2. 服务器响应需要返回. `Access-Control-Allow-Credentials` 并设置为true
+
+
+**非简单请求**
+
+除了简单请求就是非简单请求
+
+- PUT 方法
+- DELETE 方法
+
+预检请求
+
+```
+OPTIONS / HTTP/1.1
+Origin: 当前地址
+Host: xxx.com
+Access-Control-Request-Method: PUT
+Access-Control-Request-Headers: X-Custom-Header
+```
+
+预检请求的响应
+
+
+```
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT
+Access-Control-Allow-Headers: X-Custom-Header
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 1728000 // 预检请求的有效期，在此期间，不用发出另外一条预检请求
+Content-Type: text/html; charset=utf-8
+Content-Encoding: gzip
+Content-Length: 0
+```
+
+预检请求发出后，如果不满足响应头条件，就会触发XMLHttpRequest的onerror方法，浏览器不会发出cors请求
+
+cors响应
+
+## JSONP
+
+```js
+// 客户端请求
+const jsonp = ({url, params, callbackName}) => {
+  const generateUrl = () => {
+    let dataStr = ''
+    for(let key in params){
+      dataStr += `${key}=${params[key]}&`
+    }
+    dataStr+=`callback=${callbackName}`
+    return `${url}?${dataStr}`
+  }
+  return new Promise((resolve, reject) => {
+    let scriptEl = document.creaateElement('script')
+    scriptEl.src = generateUrl()
+    document.body.appendChild(scriptEl)
+    const cbName = callbackName || 'callback'
+    window[cbName] = (data) => {
+      resolve(data)
+      document.body.removeChild(scriptEl)
+    }
+  })
+}
+
+```
+
+服务端响应
+
+```js
+let express = require('express')
+
+let app = express()
+app.get('/', function(req, res) {
+  let {a, b, callback} = req.query
+  // get data
+  const data = {name: 'data'}
+  res.end(`${callback}(${data})`)
+})
+```
+
+调用
+
+```js
+jsonp({
+  url: 'http://locahost:3000',
+  params: {
+    a: 1, b: 2
+  }
+}).then(data => {
+  console.log(data)
+})
+```
+
