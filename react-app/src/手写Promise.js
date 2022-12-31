@@ -1,23 +1,3 @@
-# 手写promise
-
-[setTimeout和setImmediate到底谁先执行，本文让你彻底理解Event Loop](https://juejin.cn/post/6844904100195205133)
-[手写一个Promise/A+,完美通过官方872个测试用例](https://juejin.cn/post/6844904116913700877)
-
-## 规范
-
-1. thenable 一个拥有then方法的对象或函数
-2. value： resolve出来的值，可以时任何合法的js值(undefined thenable promise)
-3. exception： 异常，在promise里面用throw抛出来的值
-4. reason： 拒绝原因，是react里面传递的参数
-
-
-## promise状态
-
-1. pending 在promise resolve reject之前就处于这个状态
-2. fulfilled 在promise resolve之后就处于fulfilled状态，状态不能再改变，而且必须拥有一个不可变的值
-3. reject：promise被reject之后，就处于rejected状态，状态不能改变，而且必须拥有一个不可变的原因
-
-```js
 const PENDING = 'pending'
 const FULFILLED = 'fulfilled'
 const REJECTED = 'rejected'
@@ -187,4 +167,3 @@ export class MyPromise {
 //       console.log(reason)
 //     })
 // result: 1,2
-```
