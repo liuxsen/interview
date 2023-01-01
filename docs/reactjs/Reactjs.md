@@ -269,3 +269,68 @@ function Counter () {
 
 
 useEffect 是dom更新之后延时调用，useLayoutEffect 是dom更新之后同步调用，一般使用useEffect
+
+## 9. useCallback 和 useMemo 的区别
+
+共同点
+
+1. useCallback 和 useMemo 接收参数一致，第一参数是函数，第二个参数是依赖的数据
+2. 依赖数据发生变化，重新计算结果；有缓存作用
+
+区别
+
+1. useMemo 缓存函数return的值，useCallback 缓存函数
+
+例子：
+
+```js
+// useCallback
+const memoizedCallback = useCallback(() => {
+  console.log('do something', a, b)
+}, [a, b])
+// useMemo
+const memoizedValue = useMemo(() => {
+  return [a,b]
+}, [a,b])
+```
+
+## 10. hooks 闭包陷阱
+
+useEffect、useMemo、useCallback、都自带闭包；
+每一次的渲染，他们都会捕获当前组件函数上下文的状态(state, props);所以每次这三种hook执行，反应的都是当前的状态，无法捕获上一次的状态;
+如果useState使用的是一个引用值类型，在setState的时候，没有改变引用值，那么在这些函数中将不会出现闭包陷阱，不过不建议这样使用
+
+```js
+import { useEffect, useRef, useState } from 'react'
+
+export const useFn = () => {
+  const [state, setState] = useState(0)
+  const ref = useRef()
+  console.log('3')
+  useEffect(() => {
+    console.log(4)
+    ref.current = setInterval(() => {
+      console.log(state)
+    }, 1000);
+    return () => {
+      console.log('5')
+      clearInterval(ref.current)
+    }
+  }, [state])
+  return [state, setState]
+}
+
+export const BCom = () => {
+  console.log('2')
+  const [state, setState] = useFn()
+
+  const onClick = () => {
+    setState(state + 1)
+  }
+  return (
+    <div>
+      <button onClick={onClick}>add</button>
+    </div>
+  )
+}
+```

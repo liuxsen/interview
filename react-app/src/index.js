@@ -9,10 +9,14 @@ import ReactDOM from 'react-dom'
 // import './节流'
 // import './快速排序'
 // import './类型判断'
-import './手写Promise'
+// import './手写Promise'
+import { BCom } from './hook闭包'
 
 const App = () => {
-  return <div>app</div>
+  console.log('=========1=======')
+  return <div>
+    <BCom/>
+  </div>
 }
 
 const container = document.getElementById('root')

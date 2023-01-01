@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="dist/vue.js"></script>
+  <script>
+    console.log(Vue)
+    const vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          name: 'hello',
+          profile: null,
+          user: {
+            name: '章三',
+            age: 10
+          },
+          list: [1,2,3, {name: '里斯'}]
+        }
+      },
+      props: {
+      },
+      watch: {
+      },
+      computed: {
+      },
+      methods: {
+      }
+    })
+    // vm._data.name = '章三'
+    // console.log(vm._data)
+    // vm._data.user.age = 30
+    // vm._data.profile = {name: 'profile'}
+    // vm._data.list.push({age: 1})
+    // console.log(vm._data)
+    console.log('get proxy name', vm.name)
+    vm.name = '张三'
+    console.log(vm)
+  </script>
+</body>
+</html>
