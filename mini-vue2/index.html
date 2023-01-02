@@ -7,7 +7,8 @@
   <title>Document</title>
 </head>
 <body>
-  <div id="app"></div>
+  <!-- <div id="app" class="container">hello {{msg}} <h1 name="title" class="primry" value="aaa">qqq<a>aaa</a></h1><span>aaa</span></div> -->
+  <div id="app" class="container" style="color: red; background: blue;">hello {{msg}} {{ name }} 你好<h1>{{user.name}}</h1></div>
   <script src="dist/vue.js"></script>
   <script>
     console.log(Vue)
@@ -15,8 +16,9 @@
       el: '#app',
       data() {
         return {
-          name: 'hello',
+          name: ' 源码 ',
           profile: null,
+          msg: ' vue2 ',
           user: {
             name: '章三',
             age: 10
@@ -41,7 +43,9 @@
     // console.log(vm._data)
     console.log('get proxy name', vm.name)
     vm.name = '张三'
-    console.log(vm)
+    // console.log(vm)
+    // vue 初次渲染、先初始化数据、模版编译、变成render() 生成虚拟节点、变成真实dom、插入到页面上
+
   </script>
 </body>
 </html>

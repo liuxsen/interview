@@ -27,7 +27,7 @@ function initProps(){}
 
 // 对data初始化
 function initData(vm){
-  console.log('vm', vm)
+  // console.log('vm', vm)
   let data = vm.$options.data
   // 修正this指向到vm实例
   vm._data = data = typeof data === 'function' ? data.call(vm) : data
