@@ -12,6 +12,16 @@
   <script src="dist/vue.js"></script>
   <script>
     console.log(Vue)
+    Vue.mixin({
+      created: function a (){
+        console.log('a')
+      }
+    })
+    Vue.mixin({
+      created: function b (){
+        console.log('b')
+      }
+    })
     const vm = new Vue({
       el: '#app',
       data() {
@@ -25,6 +35,9 @@
           },
           list: [1,2,3, {name: '里斯'}]
         }
+      },
+      created(){
+        console.log('vm created')
       },
       props: {
       },

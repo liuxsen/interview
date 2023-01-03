@@ -1,14 +1,18 @@
-import { mounteComponent } from './lifecycle'
+import { callHook, mounteComponent } from './lifecycle'
 import { compileToFuntion } from './compile/index'
 import { initState } from './initState'
+import { mergeOptions } from './utils/index'
 
 export function initMixin (Vue) {
   Vue.prototype._init = function(options){
     console.log('vue', options)
     let vm = this
-    vm.$options = options
+    vm.$options = mergeOptions(Vue.options, options)
+    console.log('init:', vm)
+    callHook(vm, 'beforeCreated')
     // 初始化状态
     initState(vm)
+    callHook(vm, 'created')
     // 配置 el跟使用vm.$mounted 效果一致
     if(vm.$options.el){
       vm.$mounted(vm.$options.el)
