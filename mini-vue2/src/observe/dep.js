@@ -1,10 +1,18 @@
+let id = 0
+
 export class Dep {
   constructor(){
+    this.id = id++
     this.subs = []
   }
   // 收集watcher
   depend(){
-    this.subs.push(Dep.target)
+    // this.subs.push(Dep.target)
+    // 给wacher 添加 deep
+    Dep.target.addDep(this)
+  }
+  addSub(watcher){
+    this.subs.push(watcher)
   }
   // 更新
   notify(){

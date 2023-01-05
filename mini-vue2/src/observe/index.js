@@ -18,6 +18,8 @@ class Observer {
       enumerable: false,
       value: this
     })
+    // this.dep = new Dep()
+    // console.log('dep target',Dep.target)
     if(Array.isArray(value)){
       console.log('数组--')
       value.__proto__ = ArrayMethods
@@ -43,12 +45,16 @@ class Observer {
 
 // 对象属性劫持
 function defineReactive (data, key, value){
+  // 给每个属性添加一个dep
   let dep = new Dep()
   // 递归遍历属性
-  observer(data[key])
+  // let childDep = observer(value)
   Object.defineProperty(data, key, {
     get(){
       // 收集依赖
+      // if(childDep.dep){
+      //   childDep.dep.depend()
+      // }
       if(Dep.target){
         dep.depend()
       }

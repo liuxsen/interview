@@ -8,6 +8,8 @@ class Watcher {
     this.cb = cb
     this.options = options
     this.id = id++
+    this.deps = []
+    this.depsId = new Set()
     // this.updat
     if(typeof updater === 'function'){
       this.getter = updater // 更新试图
@@ -21,6 +23,15 @@ class Watcher {
   }
   update(){
     this.getter()
+  }
+  addDep(dep){
+    // 去重
+    let id = dep.id
+    if(!this.depsId.has(id)){
+      this.deps.push(dep)
+      this.depsId.add(id)
+      dep.addSub(this)
+    }
   }
 }
 

@@ -31,6 +31,7 @@ methods.forEach(method => {
     if(inserted && inserted.length){
       ob.observerArray(inserted)
     }
+    // ob.dep.notify()
     return result
   }
 })

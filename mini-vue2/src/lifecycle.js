@@ -7,6 +7,8 @@ export function mounteComponent (vm) {
   let updateComponent = () => {
     vm._update(vm._render())
   }
+  // 一个组件有一个watcher!!!
+  // wacher 有更新组件方法
   new Watcher(vm, updateComponent, () => {}, true)
   callHook(vm, 'mounted')
 }

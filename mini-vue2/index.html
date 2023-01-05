@@ -8,7 +8,7 @@
 </head>
 <body>
   <!-- <div id="app" class="container">hello {{msg}} <h1 name="title" class="primry" value="aaa">qqq<a>aaa</a></h1><span>aaa</span></div> -->
-  <div id="app" class="container" style="color: red; background: blue;">hello {{msg}} {{ name }} 你好<h1>{{user.name}}</h1></div>
+  <div id="app" class="container" style="color: red; background: blue;">{{list}}</div>
   <script src="dist/vue.js"></script>
   <script>
     console.log(Vue)
@@ -26,14 +26,14 @@
       el: '#app',
       data() {
         return {
-          name: ' 源码 ',
-          profile: null,
-          msg: ' vue2 ',
-          user: {
-            name: '章三',
-            age: 10
-          },
-          list: [1,2,3, {name: '里斯'}]
+          // name: ' 源码 ',
+          // profile: null,
+          // msg: ' vue2 ',
+          // user: {
+          //   name: '章三',
+          //   age: 10
+          // },
+          list: [1,2,3,]
         }
       },
       created(){
@@ -54,16 +54,18 @@
     // vm._data.profile = {name: 'profile'}
     // vm._data.list.push({age: 1})
     // console.log(vm._data)
-    console.log('get proxy name', vm.name)
+    // console.log('get proxy name', vm.name)
 
     // 给每个组件添加一个watcher，实现当属性变化后，调用watcher 更新组件
-    setTimeout(() => {
-      vm.name = '张三'
-      console.log(vm)
-      vm.user.name = '李四'
-    }, 1000);
+    // setTimeout(() => {
+    //   vm.name = '张三'
+    //   console.log(vm)
+    //   vm.user.name = '李四'
+    // }, 1000);
     // vue 初次渲染、先初始化数据、模版编译、变成render() 生成虚拟节点、变成真实dom、插入到页面上
-
+    setTimeout(() => {
+      vm.list.push(4)
+    }, 1000);
   </script>
 </body>
 </html>
