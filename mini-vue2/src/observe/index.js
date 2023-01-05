@@ -1,7 +1,7 @@
 // 1. 对象 {a: b: {c: 1, list: [1,2,3]}}  2. 数组
 
 import { ArrayMethods } from "./arr"
-
+import {Dep} from './dep'
 export function observer (data){
   // console.log('observe', data)
   if(typeof data !== 'object' || data === null){
@@ -43,11 +43,16 @@ class Observer {
 
 // 对象属性劫持
 function defineReactive (data, key, value){
+  let dep = new Dep()
   // 递归遍历属性
   observer(data[key])
   Object.defineProperty(data, key, {
     get(){
-      console.log('数据get')
+      // 收集依赖
+      if(Dep.target){
+        dep.depend()
+      }
+      console.log('dep', dep)
       return value
     },
     set(newValue){
@@ -58,6 +63,7 @@ function defineReactive (data, key, value){
       // 如果是对象，就需要再次做对象属性劫持
       observer(newValue)
       value = newValue
+      dep.notify()
     }
   })
 }
