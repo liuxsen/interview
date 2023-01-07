@@ -10,11 +10,19 @@
 // import { BCom } from './手写/hook闭包'
 // import './store/index'
 // import './store/中间件'
-import { Provider } from 'react-redux'
-import Home from './Home'
+// import { Provider } from 'react-redux'
+// import Home from './旧版redux'
+
+// import {RouterV5} from './router-v5'
+import {AppRoutes} from './动态路由'
+
 
 export const App = ({store}) => {
-  return <Provider store={store}>
-    <Home/>
-  </Provider>
+  return <div>
+    {/* <RouterV5/> */}
+    <AppRoutes/>
+  </div>
+  // <Provider store={store}>
+  //   <Home/>
+  // </Provider>
 }
