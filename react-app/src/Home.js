@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { connect } from 'react-redux'
-import { getUserAction } from "./store/actions/getUser";
+import { getUserInfo, userActionConst } from "./store/actions/user";
+// import { getUserAction } from "./store/actions/getUser";
 
 class Home extends Component {
   constructor(props){
@@ -8,14 +9,16 @@ class Home extends Component {
     super()
   }
   changename=() =>{
-    console.log('aaa')
+    // console.log('aaa')
     // this.props.dispatch({type: 'user/changeName', payload: 'liuxsen'})
-    this.props.dispatch(getUserAction(2000))
+    this.props.dispatch(getUserInfo(1))
   }
   render(){
     return <div>
       <div>userName: {this.props.user.name}</div>
-      <div>loading: {this.props.user.loading}</div>
+      <div>userId: {this.props.user.id}</div>
+      <div>loading: {this.props.loading === true ? 'loading' : ''}</div>
+      <div>error: {this.props.error ? this.props.error.message : ''}</div>
       <div onClick={this.changename}>change name</div>
     </div>
   }
@@ -23,8 +26,10 @@ class Home extends Component {
 
 const mapStateToProps = (state,) => {
   return {
-    // reduxState: state
-    user: state.user
+    reduxState: state,
+    user: state.user,
+    loading: state.loading[userActionConst.actionName],
+    error: state.loading[userActionConst.error],
   }
 }
 

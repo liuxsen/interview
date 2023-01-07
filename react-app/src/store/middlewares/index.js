@@ -1,6 +1,4 @@
-import { promiseMiddleware } from './promise'
+import thunk from 'redux-thunk'
+import { createLogger } from 'redux-logger'
 
-
-export const middlewares = [
-  promiseMiddleware
-]
+export const middlewares = [thunk, createLogger()]

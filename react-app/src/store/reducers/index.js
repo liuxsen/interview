@@ -1,10 +1,14 @@
-import { userReducer } from './user'
+import { combineReducers } from 'redux'
+import { loadingReducer } from './loading'
 import { orderReducer } from './order'
-
+import { userReducer } from './user'
 
 const reducers = {
   user: userReducer,
-  order: orderReducer
+  order: orderReducer,
+  loading: loadingReducer
 }
 
-export default reducers
+export default combineReducers(reducers)
+
+
