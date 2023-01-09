@@ -23,10 +23,11 @@
 
 - [ ] Immutable 数据流
 - [ ] React-Router
-- [ ] redux
-- [ ] react-redux
+- [x] redux
+- [x] react-redux
 - [ ] React Hooks
 - [ ] React Fiber
+- [ ] 动画
 
 ## Vue
 
@@ -35,3 +36,4 @@
 - [ ] vue-router
 - [ ] vuex
 - [ ] piana
+- [ ] 动画

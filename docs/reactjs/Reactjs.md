@@ -334,3 +334,32 @@ export const BCom = () => {
   )
 }
 ```
+
+## 11. Context re-render 问题
+
+1. 只要最外层 `context.Provider` 组件绑定的 `value` 值有变化，就会 `re-render` 下面所有的组件；
+2. 在组件中使用了 `useContext` `useState` `useReducer` 当state或者context发生变化的时候，组件就会re-render
+
+要触发re-render需要的条件
+
+1. 通过函数组件 `useState` class组件 `this.state = {age: 123}` 的方式定义state；
+2. 通过setState 或者 this.setState 的方式 修改state
+
+### 如何避免re-render
+
+1. 拆分context
+
+```js
+<contextA.Provider value={storeA}>
+  <contextB.Provider value={storeB}>
+  </contextB.Provider>
+</contextA.Provider>
+```
+2. 多变的context放在里层
+3. 使用 `React.memo` 或者 `useMemo` 缓存组件
+
+注意： 如果有children传递的情况下，memo会失效；因为父组件重新渲染后，children是另一个对象；导致memo失效
+
+4. 使用redux
+
+redux 没有使用setState去处理state，而是通过dispatch(action) => newSate 通过react-redux的useSelector切分了context的值；然后通过redux的订阅函数 `subscribe` 来浅比较 上一次state和新一次state的对比，可以做到组件级别的render

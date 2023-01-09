@@ -1,6 +1,6 @@
 /**
  * redux实现
- * @param {*} reducer 
+ * @param {*} reducer
  * @param {*} initState 初始值
  */
 export function createStore (reducer, initState = {}) {
@@ -36,6 +36,7 @@ export function createStore (reducer, initState = {}) {
   }
 }
 
+// 接收一个包裹reducer的对象；返回一个reducer
 export function combineReducer (reducers) {
   const reducerKeys = Object.keys(reducers)
   return function reducer (state, action) {
