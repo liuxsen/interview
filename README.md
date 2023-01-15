@@ -1,7 +1,6 @@
 # interview
 面试准备
 
-
 面经
 
 - <a href="https://yangchaoyi.vip/posts/20209023/">「字节跳动-广告系统」秋招面试复盘总结</a>
@@ -28,6 +27,26 @@
 - [ ] React Hooks
 - [ ] React Fiber
 - [ ] 动画
+
+### 文章
+
+- [ ] [useEffect 完整指南](https://overreacted.io/zh-hans/a-complete-guide-to-useeffect/)
+- [ ] [在你写memo()之前](https://overreacted.io/zh-hans/before-you-memo/)
+- [ ] [为什么 'XX' 不是一个 Hooks API?](https://overreacted.io/zh-hans/why-isnt-x-a-hook/)
+- [ ] [setState如何知道该做什么？](https://overreacted.io/zh-hans/how-does-setstate-know-what-to-do/)
+- [ ] [为什么React元素有一个$$typeof属性？](https://overreacted.io/zh-hans/why-do-react-elements-have-typeof-property/)
+- [ ] [为什么我们要写 super(props) ？](https://overreacted.io/zh-hans/why-do-we-write-super-props/)
+
+### 生态
+
+- [ ] [jotai 状态管理](https://jotai.org/)
+- [ ] [zustand](https://github.com/pmndrs/zustand)
+- [ ] [swr]()
+- [ ] [react query](https://react-query-v3.tanstack.com/overview)
+
+### github
+
+- [ ] [nestjs-blog](https://github.com/onfuns/nestjs-blog)
 
 ## Vue
 
