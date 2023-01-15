@@ -17,14 +17,16 @@
 // import {AppRoutes} from './动态路由'
 // import './手写/MyRedux'
 // import {ReactReduxDemo} from './手写/MyReactRedux'
-import { ContextDemo } from './context'
+// import { ContextDemo } from './context'
+import {MyReactRouteDemo} from './手写/MyReactRouter'
 
 export const App = ({store}) => {
   return <div>
     {/* <ReactReduxDemo/> */}
     {/* <RouterV5/> */}
     {/* <AppRoutes/> */}
-    <ContextDemo/>
+    {/* <ContextDemo/> */}
+    <MyReactRouteDemo/>
   </div>
   // <Provider store={store}>
   //   <Home/>
