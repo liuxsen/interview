@@ -78,7 +78,6 @@ export const Switch = props => {
   let match = null
   let element = null
   // props.children [Route, Route]
-  debugger
   React.Children.forEach(props.children, (child, index) => {
     if(match === null && React.isValidElement(child)){
       element = child
