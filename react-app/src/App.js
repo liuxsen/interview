@@ -19,7 +19,8 @@
 // import {ReactReduxDemo} from './手写/MyReactRedux'
 // import { ContextDemo } from './context'
 // import {MyReactRouteDemo} from './手写/MyReactRouter'
-import { HistoryDemo } from './手写/MyHistory'
+// import { HistoryDemo } from './手写/MyHistory'
+import { ReactQueryDemo } from './query-store'
 export const App = ({store}) => {
   return <div>
     {/* <ReactReduxDemo/> */}
@@ -27,7 +28,8 @@ export const App = ({store}) => {
     {/* <AppRoutes/> */}
     {/* <ContextDemo/> */}
     {/* <MyReactRouteDemo/> */}
-    <HistoryDemo/>
+    {/* <HistoryDemo/> */}
+    <ReactQueryDemo/>
   </div>
   // <Provider store={store}>
   //   <Home/>

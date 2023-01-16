@@ -21,7 +21,7 @@
 ## React
 
 - [ ] Immutable 数据流
-- [ ] React-Router
+- [x] React-Router
 - [x] redux
 - [x] react-redux
 - [ ] React Hooks
@@ -43,6 +43,8 @@
 - [ ] [zustand](https://github.com/pmndrs/zustand)
 - [ ] [swr]()
 - [ ] [react query](https://react-query-v3.tanstack.com/overview)
+  - [ ] [awesome-react-query](https://github.com/Buuntu/awesome-react-query)
+  - [ ] [react-query-blog-refactor-example](https://github.com/tannerlinsley/react-query-blog-refactor-example)
 
 ### github
 
