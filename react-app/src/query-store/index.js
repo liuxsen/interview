@@ -1,65 +1,34 @@
 import { useState } from 'react'
-import { QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
-import { queryClient } from './queryclient'
-
-import { usePosts } from './hooks/usePosts'
-import { useAddPost } from './hooks/useAddPost'
-import { usePost } from './hooks/usePost'
-
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { ReactQueryDevtools} from '@tanstack/react-query-devtools'
+import { PostList } from "./PostList"
+import { PostList2 } from './PostList2'
+import { Post } from './Post'
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
+})
 
 export const ReactQueryDemo = () => {
   return <QueryClientProvider client={queryClient}>
-    <ReactQueryDevtools initialIsOpen={false} />
-    <DemoPage />
+    <ReactQueryDevtools/>
+    <Demo/>
   </QueryClientProvider>
 }
 
-export const Demo = ({queryKey, onSetId}) => {
-  // querykey 可以用来做重复请求排重
-  const {isLoading, error, data} = usePosts()
-
-  if(isLoading){
-    return <div>loading</div>
-  }
-  if(error){
-    return <div>error</div>
+export const Demo = () => {
+  const [index, setIndex] = useState(0)
+  const [postId, setPostId] = useState(null)
+  // const [PostlistComponent, setComponent] = useState(<PostList/>)
+  const onChangeComponent = (index) => {
+    setIndex(index)
   }
   return <div>
-    <ul>
-      {
-        data.map(post => {
-          return <li key={post.id} onClick={() => onSetId(post.id)}>{post.title}</li>
-        })
-      }
-    </ul>
-  </div>
-}
-
-const DemoPage = ({children}) => {
-  const [id, setId] = useState(null)
-  return <div>
-    {
-      !id ? <Demo queryKey="post" onSetId={(id) => setId(id)}/> : <Post onClearId={() => setId(null)} id={id}></Post>
-    }
-    <AddPost/>
-  </div>
-}
-
-const Post = ({id, onClearId}) => {
-  const {isLoading, data} = usePost(id)
-  return <div>
-    <div>{isLoading ? `fetch post detail with id = ${id}` : ''}</div>
-    {!isLoading && <div>title: {data && data.title}</div>}
-    <button onClick={() => onClearId()}>clear id</button>
-  </div>
-}
-
-const AddPost = () => {
-  const { mutate, isLoading, isSuccess } = useAddPost()
-  return <div>
-    {isLoading ? 'loading' : ''}
-    {isSuccess ? 'add success ' : ''}
-    <button onClick={() => mutate({id: 'new id', title: 'new post'})}>add post</button>
+    <div>
+      <button onClick={() => {onChangeComponent(0)}}>postlist 1</button>
+      <button onClick={() => {onChangeComponent(1)}}>postlist 2</button>
+    </div>
+    {!postId && index === 0 && <PostList onChangId={(id) => {setPostId(id)}}/>}
+    {!postId && index === 1 && <PostList2 onChangId={(id) => {setPostId(id)}}/>}
+    {postId && <Post id={postId} onChangId={(id) => {setPostId(id)}}/>}
   </div>
 }

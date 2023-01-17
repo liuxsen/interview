@@ -1,6 +1,10 @@
-import {useQuery} from 'react-query'
-import { getPostWithId } from '../db'
+import { useQueryClient } from '@tanstack/react-query'
+import { getPost } from '../apis/post'
 
-export const usePost = (id) => {
-  return useQuery(['postdetail', id], () => getPostWithId(id))
+export const usePreFetchPost = (id) => {
+  const queryClient = useQueryClient()
+  return queryClient.prefetchQuery({
+    queryFn: () => getPost(id),
+    queryKey: ['post', id]
+  })
 }
