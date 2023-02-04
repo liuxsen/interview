@@ -1,0 +1,17 @@
+{
+  "name": "vue3",
+  "description": "vue3 实现",
+  "scripts": {
+    "bundle": "rollup -c",
+    "build": "webpack",
+    "dev": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "rollup": "3.12.0",
+    "rollup-plugin-serve": "^2.0.2",
+    "webpack": "5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
+  }
+}

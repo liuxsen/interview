@@ -4,14 +4,16 @@ import { ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import { PostList } from "./PostList"
 import { PostList2 } from './PostList2'
 import { Post } from './Post'
+import { PageDemo } from './page'
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
+  // defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
 })
 
 export const ReactQueryDemo = () => {
   return <QueryClientProvider client={queryClient}>
     <ReactQueryDevtools/>
-    <Demo/>
+    {/* <Demo/> */}
+    <PageDemo/>
   </QueryClientProvider>
 }
 
