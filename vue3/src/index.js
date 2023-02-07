@@ -24,4 +24,12 @@
 // import './23-封装reactive'
 // import './24-深响应'
 // import './25-createReactive-支持深浅响应'
-import './26-readonly'
+// import './26-readonly'
+// import './27-array'
+// import './28-遍历array'
+// import './29-数组查找'
+// import './30-数组查找-indexOf-lastIndexOf'
+// import './31-array-隐式修改数组长度'
+// import './32-set'
+// import './33-原始值-ref'
+import './34-ref-自动脱' // .value 访问属性，增加了用户的心智负担
