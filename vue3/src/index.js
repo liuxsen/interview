@@ -32,4 +32,7 @@
 // import './31-array-隐式修改数组长度'
 // import './32-set'
 // import './33-原始值-ref'
-import './34-ref-自动脱' // .value 访问属性，增加了用户的心智负担
+// import './34-ref-自动脱' // .value 访问属性，增加了用户的心智负担
+// import './35-渲染器'
+// import './36-渲染器-基本概念-整体架构'
+import './37-渲染器-挂载-更新'
