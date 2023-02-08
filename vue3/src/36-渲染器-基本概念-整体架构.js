@@ -1,4 +1,4 @@
-const { effect, ref } = VueReactivity
+const { effect, ref, reactive } = VueReactivity
 function createRenderer(
   {
     createElement,
@@ -18,6 +18,7 @@ function createRenderer(
       mountElement(n2, container)
     } else {
       // n1存在意味着打补丁
+      console.log('TODO 更新操作')
     }
   }
   function mountElement(vnode, container){
@@ -75,9 +76,13 @@ const vnode = {
   type: 'h1',
   children: 'hello vnode'
 }
-
+const obj = reactive(vnode)
 // 第一次渲染 mount
-render(vnode, container)
+effect(() => {
+  console.log('change effect')
+  render(obj, container)
+})
+obj.children = 'change text'
 // 第二次渲染，更新dom
 // render(newNode, container)
 // 第三次渲染，删除dom

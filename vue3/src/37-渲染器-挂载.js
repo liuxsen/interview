@@ -1,4 +1,4 @@
-const { effect, ref } = VueReactivity
+const { effect, ref, reactive } = VueReactivity
 function createRenderer(
   {
     createElement,
@@ -26,6 +26,8 @@ function createRenderer(
         mountElement(n2, container)
       } else {
         // n1存在意味着打补丁 更新
+        console.log('todo: 更新操作')
+        // patchElement()
       }
     } else if(typeof type === 'object'){
       // 如果n2.type 的值的类型是对象，则他描述的是组件
@@ -39,7 +41,9 @@ function createRenderer(
     if(vnode.props){
       // 如果vnode.props 存在
       for (const key in vnode.props) {
+        // 循环遍历属性
         const value = vnode.props[key]
+        // 更新dom属性以及绑定事件函数
         patchProps(el, key, null, value)
       }
     }
@@ -77,8 +81,6 @@ function createRenderer(
   }
 }
 
-
-
 // 渲染器函数
 const {render} = createRenderer({
   createElement(tag){
@@ -96,7 +98,7 @@ const {render} = createRenderer({
   },
   unmount(vnode){
     // 根据vnode获取真实的vnode节点
-    const el = container._vnode.el
+    const el = vnode.el
     // 获取el的父元素
     const parent = el.parentNode
     // 删除元素
@@ -110,18 +112,23 @@ const {render} = createRenderer({
     }
     const type = typeof el[key]
     if(/^on/.test(key)){
-      debugger
+      // 处理事件绑定
       const name = key.slice(2).toLowerCase()
       // 先移除之前的事件处理函数, 或者使用伪造的事件处理函数
       // prevValue && el.removeEventListener(name, prevValue)
+      // 获取缓存在el上的事件函数
       let invoker = el._vei
       if(nextValue){
+        // 如果绑定了事件函数
         if(!invoker){
+          // 如果没有缓存过事件函数，新建一个事件函数并保存到el._vei
           invoker = el._vei = (e) => {
             invoker.value(e)
           }
+          // 将事件函数赋值给invoker.value
           invoker.value = nextValue
-          el.addEventListener(name, nextValue)
+          // 添加事件监听，这里每次触发的函数都是invoker
+          el.addEventListener(name, invoker)
         } else {
           invoker.value = nextValue
         }
@@ -139,6 +146,7 @@ const {render} = createRenderer({
         el[key] = nextValue
       }
     } else {
+      // 如果设置的key不在dom properties属性中，则使用setAttribute
       el.setAttribute(key, nextValue)
     }
   }
@@ -149,19 +157,23 @@ const container = document.getElementById('app')
 const vnode = {
   type: 'div',
   props: {
-    onClick: () => {
+    onClick: (e) => {
+      console.log(e)
       console.log('clicked')
     }
   },
   children: 'on click'
 }
-
 // 第一次渲染 mount
 render(vnode, container)
-vnode.props.onClick = () => {
-  console.log('clicked 2')
+const vnode2 = {
+  type: 'span',
+  props: {
+    onClick: (e) => {
+      console.log(e)
+      console.log('clicked')
+    }
+  },
+  children: 'on click span'
 }
-console.log(vnode)
-render(vnode, container)
-// 第三次渲染，删除dom
-// render(null, container)
+render(vnode2, container)
