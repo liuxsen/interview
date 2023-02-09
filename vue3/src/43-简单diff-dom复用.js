@@ -32,7 +32,7 @@ function createRenderer(options){
    * @param {vnode} n2 新vnode
    * @param {dom} container dom
    */
-  function patch(n1, n2, container){
+  function patch(n1, n2, container, anchor){
     // n1 第一次是空的，第二次有值从container中获取
     if(n1 && n1.type !== n2.type){
       // 如果有旧dom，新dom跟旧dom不一致；先卸载旧dom；vnode会在mountElement中通过vnode.el来挂载dom
@@ -44,7 +44,7 @@ function createRenderer(options){
       // 如果新节点的类型是字符串
       if(!n1){
         // 如果n1不存在，意味着挂载，调用mounteElement完成挂载
-        mountElement(n2, container)
+        mountElement(n2, container, anchor)
       } else {
         // n1存在意味着打补丁 更新
         patchElement(n1, n2)
@@ -95,7 +95,7 @@ function createRenderer(options){
   }
 
   // 挂载dom
-  function mountElement(vnode, container){
+  function mountElement(vnode, container, anchor){
     // 新建dom元素
     const el = vnode.el = createElement(vnode.type)
     if(vnode.props){
@@ -117,7 +117,7 @@ function createRenderer(options){
         patch(null, child, el)
       })
     }
-    insert(el, container)
+    insert(el, container, anchor)
   }
   // 更新子节点
   function patchChildren(n1, n2, container){
@@ -136,12 +136,68 @@ function createRenderer(options){
       if(Array.isArray(n1.children)){
         // 如果旧节点是一组节点
         // 说明 新旧子节点都是一组子节点，核心算法
-        // TODO: 使用diff算法
-        // 暂时使用傻瓜式的方法保障功能可用，把旧的一组子节点全部卸载，将新的一组子节点全部挂载
-        n1.children.forEach(c => unmount(c))
-        n2.children.forEach(c => {
-          patch(null, c, container)
-        })
+        // 简单diff算法 尽可能多的调用patch函数更新，在对比新旧子节点的长度，如果新子节点更长，说明有新子节点挂载，如果旧子节点更长，说明有旧子节点需要卸载
+        const oldChildren = n1.children
+        const newChildren = n2.children
+        // 用来存储 寻找过程中遇到的最大索引值
+        let lastIndex = 0
+        // 遍历新的children
+        for(let i =0; i<newChildren.length;i++){
+          const newNode = newChildren[i]
+          let find = false
+          for(let j =0;j<oldChildren.length;j++){
+            const oldNode = oldChildren[j]
+            if(newNode.key === oldNode.key){
+              find = true
+              // 如果找到了具有相同key值的两个节点，说明可以复用，但仍然需要调patch更新函数
+              patch(oldNode, newNode, container)
+              if(j<lastIndex){
+                // 如果当前找到的节点在旧children中的索引小于最大索引值 lastIndex 则需要移动dom
+                // newNode 对应的真实dom需要移动
+                // 获取newNode的前一个节点
+                const prevNode = newChildren[i -1]
+                // 如果prevNode不存在说明newNode是第一个节点不需要移动
+                if(prevNode){
+                  // 由于我们要将newNode对应的真实DOM移动到prevNode对应的真实DOM后面
+                  // 所以我们要获取prevNode对应的真实DOM的下一个兄弟节点，将其左右真实锚点
+                  const anchor = prevNode.el.nextSibling
+                  // 调用insert方法将newNode对应的真实DOM插入到锚点前面
+                  insert(newNode.el, container, anchor)
+                }
+                console.log(j)
+              } else {
+                // 如果当前找到的节点在旧 children 中的索引不小于最大索引值
+                // 更新lastIndex值
+                lastIndex= j
+              }
+              break;
+            }
+          }
+          if(!find){
+            // 说明当前newVNode没有在旧的一组子节点中找到可复用的节点
+            // 也就是说 当前newVnode 是新增节点需要挂载
+            const prevNode = newChildren[i - 1]
+            let anchor = null
+            if(prevNode){
+              // 如果有前一个vnode节点，则使用它对应的dom的下一个兄弟节点作为锚点元素
+              anchor = prevNode.el.nextSibling
+            } else {
+              // 如果没有前一个vnode节点，说明即将挂载的新节点是第一个子节点
+              anchor = container.fistChild
+            }
+            patch(null, newNode, container, anchor)
+          }
+        }
+        // 删除逻辑
+        for(let i=0; i<oldChildren.length;i++){
+          const oldVNode = oldChildren[i]
+          const has = newChildren.find(vnode => {
+            return vnode.key === oldVNode.key
+          })
+          if(!has){
+            unmount(oldVNode)
+          }
+        }
       } else {
         // 旧子节点要么是文本子节点，要么不存在
         // 无论是哪种情况，我们都只需要清空容器，然后将新的一组子节点逐个挂载
@@ -276,27 +332,58 @@ const {render} = createRenderer({
   }
 })
 const container = document.getElementById('app')
-const bol = ref(false)
+const bol = ref(true)
 
 
 // <div><!-- 注释节点 -->我是文本节点</div>
 effect(() => {
   const newNode = {
     type: 'ul',
+    props: {
+      onClick(){
+        bol.value = !bol.value
+      }
+    },
     children: [
       {
         type: Fragment,
-        children: [
+        children: bol.value ? [
           {
             type: 'li',
-            props: {
-              class: 'aaa',
-              onClick(){
-                bol.value = !bol.value
-              }
-            },
-            children: bol.value ? 'this is new li' : 'this is li'
-          }
+            key: 1,
+            children: '1'
+          },
+          {
+            type: 'li',
+            key: 2,
+            children: '2'
+          },
+          {
+            type: 'li',
+            key: 3,
+            children: '3'
+          },
+        ] : [
+          {
+            type: 'li',
+            key: 3,
+            children: 'a'
+          },
+          {
+            type: 'li',
+            key: 1,
+            children: 'b'
+          },
+          {
+            type: 'li',
+            key: 5,
+            children: '5c'
+          },
+          {
+            type: 'li',
+            key: 2,
+            children: 'c'
+          },
         ]
       }
     ]

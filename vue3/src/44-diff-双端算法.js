@@ -32,7 +32,7 @@ function createRenderer(options){
    * @param {vnode} n2 新vnode
    * @param {dom} container dom
    */
-  function patch(n1, n2, container){
+  function patch(n1, n2, container, anchor){
     // n1 第一次是空的，第二次有值从container中获取
     if(n1 && n1.type !== n2.type){
       // 如果有旧dom，新dom跟旧dom不一致；先卸载旧dom；vnode会在mountElement中通过vnode.el来挂载dom
@@ -44,7 +44,7 @@ function createRenderer(options){
       // 如果新节点的类型是字符串
       if(!n1){
         // 如果n1不存在，意味着挂载，调用mounteElement完成挂载
-        mountElement(n2, container)
+        mountElement(n2, container, anchor)
       } else {
         // n1存在意味着打补丁 更新
         patchElement(n1, n2)
@@ -95,7 +95,7 @@ function createRenderer(options){
   }
 
   // 挂载dom
-  function mountElement(vnode, container){
+  function mountElement(vnode, container, anchor){
     // 新建dom元素
     const el = vnode.el = createElement(vnode.type)
     if(vnode.props){
@@ -117,7 +117,7 @@ function createRenderer(options){
         patch(null, child, el)
       })
     }
-    insert(el, container)
+    insert(el, container, anchor)
   }
   // 更新子节点
   function patchChildren(n1, n2, container){
@@ -136,12 +136,7 @@ function createRenderer(options){
       if(Array.isArray(n1.children)){
         // 如果旧节点是一组节点
         // 说明 新旧子节点都是一组子节点，核心算法
-        // TODO: 使用diff算法
-        // 暂时使用傻瓜式的方法保障功能可用，把旧的一组子节点全部卸载，将新的一组子节点全部挂载
-        n1.children.forEach(c => unmount(c))
-        n2.children.forEach(c => {
-          patch(null, c, container)
-        })
+        patchKeyedChildren(n1, n2, container)
       } else {
         // 旧子节点要么是文本子节点，要么不存在
         // 无论是哪种情况，我们都只需要清空容器，然后将新的一组子节点逐个挂载
@@ -180,6 +175,54 @@ function createRenderer(options){
     }
     // 更新children
     patchChildren(n1, n2, el)
+  }
+  // 复用节点
+  function patchKeyedChildren(n1, n2, container){
+    const oldChildren = n1.children
+    const newChildren = n2.children
+    // 四个索引值
+    let oldStartIndex = 0
+    let oldEndIndex = oldChildren.length -1
+    let newStartIndex = 0
+    let newEndIndex = newChildren.length - 1
+    // 四个索引指向的vnode节点
+    let oldStartNode = oldChildren[oldStartIndex]
+    let oldEndNode = oldChildren[oldEndIndex]
+    let newStartNode = newChildren[newStartIndex]
+    let newEndNode = newChildren[newEndIndex]
+    while(newStartIndex <= newEndIndex && oldStartIndex <= oldEndIndex){
+      // 一个while循环中，执行的条件是 新旧节点 头部索引值小于等于尾部索引值
+      if(newStartNode.key === oldStartIndex.key){
+        // 第一步
+        patch(oldStartNode, newStartNode, container)
+        // 更新索引
+        oldStartNode = oldChildren[++oldStartIndex]
+        newStartNode = newChildren[--newStartIndex]
+      } else if(newEndNode.key === oldEndNode.key){
+        // 第二步
+        // 由于比较的都是尾部节点，所以节点在新的顺序中仍然处于尾部，不需要移动
+        // 需要打补丁
+        patch(oldEndNode, newEndNode, container)
+        oldEndNode = oldChildren[--oldEndIndex]
+        newEndNode = newChildren[--newEndIndex]
+      } else if(newEndNode.key === oldStartNode.key){
+        // 第三步; 新节点在最后， 说明旧节点对应的dom需要放在旧节点组的最后一个节点后面
+        // 调用patch函数
+        patch(oldStartNode, newEndNode, container)
+        insert(oldStartNode.el, container, oldEndNode.el.nextSibling)
+        oldStartNode = oldChildren[++oldStartIndex]
+        newEndNode = newChildren[--newEndIndex]
+      } else if(newStartNode.key === oldEndNode.key){
+        // 第四步 说明最后一个元素在新队列中是第一个
+        patch(oldEndNode, newStartNode, container)
+        // 将oldEndNode.el 移动到 oldEndStartNode.el 前面
+        insert(oldEndNode.el, container, oldStartNode.el)
+        // 移动DOM完成后，更新索引值
+        oldEndIndex = oldEndIndex -1
+        oldEndNode = oldChildren[oldEndIndex]
+        newStartNode = newChildren[++newStartIndex]
+      }
+    }
   }
 
   function hydrate (vnode, container){
@@ -276,27 +319,53 @@ const {render} = createRenderer({
   }
 })
 const container = document.getElementById('app')
-const bol = ref(false)
+const bol = ref(true)
 
 
 // <div><!-- 注释节点 -->我是文本节点</div>
 effect(() => {
   const newNode = {
     type: 'ul',
+    props: {
+      onClick(){
+        bol.value = !bol.value
+      }
+    },
     children: [
       {
         type: Fragment,
-        children: [
+        children: bol.value ? [
           {
             type: 'li',
-            props: {
-              class: 'aaa',
-              onClick(){
-                bol.value = !bol.value
-              }
-            },
-            children: bol.value ? 'this is new li' : 'this is li'
-          }
+            key: 1,
+            children: '1'
+          },
+          {
+            type: 'li',
+            key: 2,
+            children: '2'
+          },
+          {
+            type: 'li',
+            key: 3,
+            children: '3'
+          },
+        ] : [
+          {
+            type: 'li',
+            key: 3,
+            children: 'a'
+          },
+          {
+            type: 'li',
+            key: 1,
+            children: 'b'
+          },
+          {
+            type: 'li',
+            key: 2,
+            children: 'c'
+          },
         ]
       }
     ]

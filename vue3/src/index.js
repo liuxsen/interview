@@ -39,4 +39,7 @@
 // import './38-渲染器-事件-支持绑定多个'
 // import './39-渲染器-事件冒泡'
 // import './40-渲染器-注释-文本节点'
-import './41-渲染器-fragment'
+// import './41-渲染器-fragment'
+// import './42-简单diff'
+// import './43-简单diff-dom复用'
+import './44-diff-双端算法'

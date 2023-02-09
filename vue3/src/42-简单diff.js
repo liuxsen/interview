@@ -136,12 +136,27 @@ function createRenderer(options){
       if(Array.isArray(n1.children)){
         // 如果旧节点是一组节点
         // 说明 新旧子节点都是一组子节点，核心算法
-        // TODO: 使用diff算法
-        // 暂时使用傻瓜式的方法保障功能可用，把旧的一组子节点全部卸载，将新的一组子节点全部挂载
-        n1.children.forEach(c => unmount(c))
-        n2.children.forEach(c => {
-          patch(null, c, container)
-        })
+        // 简单diff算法 尽可能多的调用patch函数更新，在对比新旧子节点的长度，如果新子节点更长，说明有新子节点挂载，如果旧子节点更长，说明有旧子节点需要卸载
+        const oldChildren = n1.children
+        const newChildren = n2.children
+        const newLen = newChildren.length
+        const oldLen = oldChildren.length
+        const commonLength = Math.min(newLen, oldLen)
+        for(let i =0;i<commonLength;i++){
+          patch(oldChildren[i], newChildren[i], container)
+        }
+        if(newLen > oldLen){
+          // 如果新子节点更长，说明需要挂载
+          for (let index = commonLength; index < newLen; index++) {
+            patch(null, newChildren[index], container)
+          }
+        }
+        if(oldLen > newLen){
+          // 如果旧子节点数量大于新子节点数量；需要卸载子节点
+          for (let index = commonLength; index < oldLen; index++) {
+            unmount(oldChildren[index])
+          }
+        }
       } else {
         // 旧子节点要么是文本子节点，要么不存在
         // 无论是哪种情况，我们都只需要清空容器，然后将新的一组子节点逐个挂载
@@ -276,26 +291,50 @@ const {render} = createRenderer({
   }
 })
 const container = document.getElementById('app')
-const bol = ref(false)
+const bol = ref(true)
 
 
 // <div><!-- 注释节点 -->我是文本节点</div>
 effect(() => {
   const newNode = {
     type: 'ul',
+    props: {
+      onClick(){
+        bol.value = !bol.value
+      }
+    },
     children: [
       {
+        type: 'span',
+        children: bol.value ? 'true' : 'false',
+      },
+      {
         type: Fragment,
-        children: [
+        children: bol.value ? [
           {
             type: 'li',
-            props: {
-              class: 'aaa',
-              onClick(){
-                bol.value = !bol.value
-              }
-            },
-            children: bol.value ? 'this is new li' : 'this is li'
+            children: 'aaa'
+          }
+        ] : [
+          {
+            type: 'li',
+            children: 'bbb'
+          },
+          {
+            type: 'li',
+            children: 'bbb'
+          },
+          {
+            type: 'li',
+            children: 'bbb'
+          },
+          {
+            type: 'li',
+            children: 'bbb'
+          },
+          {
+            type: 'li',
+            children: 'bbb'
           }
         ]
       }
